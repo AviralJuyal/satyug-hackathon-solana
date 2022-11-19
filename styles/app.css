@@ -460,7 +460,18 @@
     width: 60%;
     margin-top: 40px;
   }
-  
+  .metamaskIcon,.phantomIcon {
+    width: 16%;
+    height: 18%;
+  }
+  .metamaskIcon:hover,.phantomIcon:hover {
+    width: 18%;
+    cursor: pointer;
+    transition: ease-in 0.1s;
+  }
+  .walletButton{
+    background-image: linear-gradient(to bottom, #fff,#fff);
+  }
   .video-upload-wrap:hover {
     background-color: #1fb264;
     border: 4px dashed #fff;
@@ -651,9 +662,9 @@
     padding: 10px;
   }
   
-  .drop-file-input__label img {
+  /* .drop-file-input__label img {
     width: 100px;
-  }
+  } */
   
   .drop-file-preview {
     margin-top: 30px;

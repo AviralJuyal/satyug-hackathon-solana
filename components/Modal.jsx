@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import Image from 'next/image';
+import Image from 'next/future/image';
 import Web3 from "web3";
 // import "../assets/css/TestModal.css";
 import PropTypes from "prop-types";
@@ -9,6 +9,8 @@ import PropTypes from "prop-types";
 import uploadImg from "../assets/images/cloud-upload-regular-240.png";
 import { v4 as uuidv4 } from "uuid";
 import { Loader } from "./Loader";
+import metamask from "../assets/images/metamask.svg"
+import phantom from "../assets/images/phantom.svg"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/router";
@@ -19,6 +21,63 @@ const Modal = ({ onRequestClose,pathName }) => {
   const [preLoader, setPreLoader] = useState(false);
   const navigate = useRouter().push;
   const [currentAccount,setcurrentAccount] = useState('');
+
+  const [walletAddress, setWalletAddress] = useState(null);
+  // const [balance, setBalance] = useState("");
+  // const [pubkey, setPubkey] = useState("");
+
+
+
+  const checkIfWalletIsConnected = async () => {
+    try {
+      const { solana } = window;
+
+      if (solana) {
+        if (solana.isPhantom) {
+          // console.log("Wallet Found");
+          const response = await solana.connect({ onlyIfTrusted: true });
+          // console.log(
+          //   "connected with publickey:",
+          //   response.publicKey.toString()
+          // );
+          setWalletAddress(response.publicKey.toString());
+        }
+      } else {
+        alert("Get a phantom wallet")
+        console.log("Get a phantom wallet");
+      }
+    } catch (error) {
+      // console.error(error);
+    }
+  };
+
+
+  const connectSolanaWallet = async () => {
+    checkIfWalletIsConnected();
+    const { solana } = window;
+    if (solana) {
+      const response = await solana.connect();
+      // console.log("connected with public key", response.publicKey);
+      // setWalletAddress();
+      setcurrentAccount(response.publicKey.toString());
+      console.log(currentAccount);
+      setWalletConnected(true)
+      
+    }
+  };
+
+
+
+
+  const disconnectWallet = async () => {
+    const { solana } = window;
+    if (solana) {
+      await solana.disconnect();
+      setcurrentAccount(null);
+
+        // disconnectWallet()
+    }
+  };
 
   //   React.useContext(WalletContext);
     let pageName = "";
@@ -84,11 +143,20 @@ async function connectWallet(){
 
 
 
-  const handleDisconnectWallet = () => {
-    localStorage.removeItem('walletconnect')
-    setcurrentAccount('');
-    setWalletConnected(false);
+  const handleDisconnectWallet = async() => {
+    const { solana } = window;
+    if (solana) {
+      await solana.disconnect();
+      setcurrentAccount(null);
+      setWalletConnected(false);
+        // disconnectWallet()
+    }else{
 
+      localStorage.removeItem('walletconnect')
+      setcurrentAccount('');
+      setWalletConnected(false);
+    }
+    setWalletConnected(false);
   };
 
   // const handleSubmitWallet = () => {
@@ -244,13 +312,15 @@ async function connectWallet(){
               </div>
             )}
             {!walletConnected && (
-              <div className="modal__submitButton">
-                <button
-                  className="btn-hover color-5"
-                  onClick={connectWallet}
-                >
-                  Connect To Wallet
-                </button>
+              <div className="modal__submitButton d-flex justify-content-evenly mt-5">
+                
+                  
+                
+                 <Image src={metamask} className="metamaskIcon" onClick={connectWallet}/>
+              
+                
+                  <Image src={phantom} className="phantomIcon" onClick={connectSolanaWallet}/>
+            
               </div>
             )}
             {walletConnected && (
