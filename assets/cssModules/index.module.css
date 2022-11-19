@@ -1,0 +1,10 @@
+.container {
+    max-width: 700px;
+    height: 100%;
+    background-color: white;
+    /* margin: auto; */
+    /* background-image: url('https://res.cloudinary.com/dde6glimb/video/upload/v1665922766/Waves_vsucxi.mp4'); */
+    /* width: 100vw;
+    display: flex;
+    justify-content: center; */
+}
