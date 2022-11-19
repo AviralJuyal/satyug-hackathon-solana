@@ -1,5 +1,5 @@
 {
-  "name": "solana",
+  "name": "satyug-next",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,8 +9,27 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "13.0.4",
+    "@aeternity/aepp-sdk": "^8.0.0",
+    "@fireworks-js/react": "^2.5.1",
+    "@react-hook/window-size": "^3.1.1",
+    "@walletconnect/web3-provider": "^1.8.0",
+    "aos": "^2.3.4",
+    "next": "12.3.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-confetti": "^6.1.0",
+    "react-dom": "18.2.0",
+    "react-draggable": "^4.4.5",
+    "react-loader-spinner": "^5.3.4",
+    "react-router-dom": "^6.4.2",
+    "react-toastify": "^9.0.8",
+    "react-typical": "^0.1.3",
+    "typewriter-effect": "^2.19.0",
+    "uuid": "^9.0.0",
+    "web3": "^1.8.0",
+    "web3modal": "^1.9.9"
+  },
+  "devDependencies": {
+    "eslint": "8.26.0",
+    "eslint-config-next": "12.3.1"
   }
 }

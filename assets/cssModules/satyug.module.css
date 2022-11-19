@@ -1,0 +1,41 @@
+.container{
+    height:99.435vh;
+    width: 100vw;
+    /* height: 5000px; */
+    z-index: 0;
+}
+
+.vidStyles{
+    height: 100%;
+    width: 100%;
+    object-fit: fill
+}
+
+.OculusMain{
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+}
+.linkHome{
+    display: flex;
+    justify-content: space-between;
+    width: 80vw;
+}
+.clickEnterText{
+    cursor:pointer;
+}
+.imageLogo{
+    margin-top: 0.5em;
+}
+.comingSoonImage{
+    height:100vh!important;
+    width:100vw!important; 
+    object-fit:fill; 
+    object-position : center!important;
+  }
+@media screen and (max-width: 500px) {
+    .clickEnterText{
+        font-size: 2rem;
+    }
+}
