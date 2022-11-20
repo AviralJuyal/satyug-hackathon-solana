@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef , useContext } from "react";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Image from 'next/future/image';
@@ -6,7 +6,7 @@ import Web3 from "web3";
 // import "../assets/css/TestModal.css";
 import PropTypes from "prop-types";
 // import { WalletContext } from "../context/WalletContext";
-import uploadImg from "../assets/images/cloud-upload-regular-240.png";
+// import uploadImg from "../assets/images/cloud-upload-regular-240.png";
 import { v4 as uuidv4 } from "uuid";
 import { Loader } from "./Loader";
 import metamask from "../assets/images/metamask.svg"
@@ -14,19 +14,44 @@ import phantom from "../assets/images/phantom.svg"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/router";
+// import type { NextPage } from 'next';
+import App from '../pages/App'
+// import WalletState from '../context/WalletState'
+import dynamic from "next/dynamic";
+import WalletContext from "../context/WalletContext";
+
+
+
+// const App = dynamic(
+//   () => {
+//     return import("../pages/App");
+//   },
+//   { ssr: false }
+// );
+
+
 const Modal = ({ onRequestClose,pathName }) => {
+  const context = useContext(WalletContext);
+  // console.log(context)
+  const {walletConnected , setWalletConnected , currentAccount , setcurrentAccount , walletType , setWalletType} = context;
+
   const [media, setMedia] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [walletConnected, setWalletConnected] = useState(false);
+  // const [walletConnected, setWalletConnected] = useState(false);
   const [preLoader, setPreLoader] = useState(false);
   const navigate = useRouter().push;
-  const [currentAccount,setcurrentAccount] = useState('');
+  // const [currentAccount,setcurrentAccount] = useState('');
 
   const [walletAddress, setWalletAddress] = useState(null);
   // const [balance, setBalance] = useState("");
   // const [pubkey, setPubkey] = useState("");
 
-
+// useEffect(()=>{
+//   if(!currentAccount|| currentAccount===''){
+//     setcurrentAccount(window.localStorage?.getItem('walletId')); 
+//   setWalletConnected(true);}
+  
+// },[])
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -62,6 +87,7 @@ const Modal = ({ onRequestClose,pathName }) => {
       setcurrentAccount(response.publicKey.toString());
       console.log(currentAccount);
       setWalletConnected(true)
+      setWalletType('phantom')
       
     }
   };
@@ -135,6 +161,7 @@ async function connectWallet(){
  setcurrentAccount(Account[0]);
   console.log(currentAccount);
   setWalletConnected(true)
+  setWalletType('polygon')
 }
 
 
@@ -144,8 +171,8 @@ async function connectWallet(){
 
 
   const handleDisconnectWallet = async() => {
-    const { solana } = window;
-    if (solana) {
+    // const { solana } = window;
+    if (walletType==='solana') {
       await solana.disconnect();
       setcurrentAccount(null);
       setWalletConnected(false);
@@ -320,6 +347,10 @@ async function connectWallet(){
               
                 
                   <Image src={phantom} className="phantomIcon" onClick={connectSolanaWallet}/>
+
+
+                  {/* {walletType==='' && <App />} */}
+                  
             
               </div>
             )}
@@ -333,7 +364,7 @@ async function connectWallet(){
               </div>
             )
             }
-            {walletConnected && (
+            {walletConnected && (walletType!== 'web3Auth')? (
               <div className="modal__submitButton">
                 <button
                   className="btn-hover color-5"
@@ -342,7 +373,7 @@ async function connectWallet(){
                   Disconnect Wallet
                 </button>
               </div>
-            )}
+            ):(<App/>)}
           </div>
         )}
         {preLoader && <Loader />}
