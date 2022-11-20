@@ -1,9 +1,14 @@
 import { useContext, useEffect, useState } from "react";
 // HIGHLIGHTSTART-importModules
+
+import { ethers } from "ethers";
 import { Web3Auth } from "@web3auth/modal";
 import { CHAIN_NAMESPACES, SafeEventEmitterProvider } from "@web3auth/base";
 import RPC from "./ethersRPC";
+import "web3";
 import WalletContext from "../context/WalletContext";
+import Web3 from "web3";
+import { createTypePredicateNodeWithModifier } from "typescript";
 
 // HIGHLIGHTSTART-registerApp
 const clientId = "8118dbfab8021e3cfda426521120b69dacbdda8b37f24781c5bda"; // get from https://dashboard.web3auth.io
@@ -16,16 +21,22 @@ function App(){
   // console.log(context)
   const {walletConnected , setWalletConnected , currentAccount , setcurrentAccount , walletType , setWalletType} = context;
   useEffect(() => {
-    const init = async () => {
-      try {
       const web3auth = new Web3Auth({
         clientId,
         chainConfig: {
-          chainNamespace: CHAIN_NAMESPACES.EIP155,
-          chainId: "0x1",
-          rpcTarget: "https://rpc.ankr.com/eth", // This is the public RPC we have added, please pass on your own endpoint while creating an app
+          chainNamespace: "eip155",
+    chainId: "0x1",
+    rpcTarget: "https://rpc.ankr.com/eth",
+    // Avoid using public rpcTarget in production.
+    // Use services like Infura, Quicknode etc
+    displayName: "Ethereum Mainnet",
+    blockExplorer: "https://etherscan.io",
+    ticker: "ETH",
+    tickerName: "Ethereum", //This is the public RPC we have added, please pass on your own endpoint while creating an app
         },
-      });
+      });    const init = async () => {
+      try {
+
 
           setWeb3auth(web3auth);
 
@@ -59,7 +70,52 @@ function App(){
     setcurrentAccount(address);
     setWalletConnected(true)
     setWalletType('web3Auth')
-    // getAccounts();
+    console.log(await rpc.getChainId())
+
+    // const user_onfo = await web3auth.getUserInfo()
+    // console.log(user_onfo);
+    
+    const web3 = new Web3(web3authProvider as any);
+     const adds = (await web3.eth.getAccounts())[0];
+     console.log(adds);
+     const bal = await web3.eth.getBalance(adds);
+     console.log(bal);
+     const provider = new ethers.providers.Web3Provider(web3authProvider);
+     
+     const signer = provider.getSigner();
+     const destination = "0x34958ccf3e9d22Ff0511fD7E70b4C328328AB1a4";
+     const tow = "0x65057bCFb2008e4BD87596c2e1041B9926e94559";
+     const amount = ethers.utils.parseEther("1.0");
+
+     const gas  = provider.getGasPrice();
+     const wallet = ethers.Wallet.fromMnemonic("ecology decide share woman tenant example empty nature tank tortoise slender short")
+     const gl = wallet.connect(provider);
+     
+
+     const tx = {
+      from: wallet.address,
+      to: tow,
+      value:amount,
+      gasPrice: gas,
+      gasLimit: ethers.utils.hexlify(10000),
+      nounce: await provider.getTransactionCount(wallet.address, 'latest')
+     };
+
+     const transection =  await signer.sendTransaction(tx);
+
+     console.log(transection);
+
+    //  const originalMessage = "YOUR_MESSAGE";
+
+    //  const signedMessage = await web3.eth.personal.sign(originalMessage, adds,"dss");
+    //  console.log(signedMessage)
+    //  web3.eth.sendSignedTransaction()
+// Submit transaction to the blockchain and wait for it to be mined
+
+// console.log(receipt);
+    
+    
+    getAccounts();
   };
 
   // const getUserInfo = async () => {

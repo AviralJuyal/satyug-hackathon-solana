@@ -19,6 +19,9 @@ import App from '../pages/App'
 // import WalletState from '../context/WalletState'
 import dynamic from "next/dynamic";
 import WalletContext from "../context/WalletContext";
+import  "./etherRPC";
+import EthereumRpc from "./etherRPC";
+
 
 
 
@@ -33,7 +36,7 @@ import WalletContext from "../context/WalletContext";
 const Modal = ({ onRequestClose,pathName }) => {
   const context = useContext(WalletContext);
   // console.log(context)
-  const {walletConnected , setWalletConnected , currentAccount , setcurrentAccount , walletType , setWalletType} = context;
+  const {walletConnected ,  setWalletConnected , currentAccount , setcurrentAccount , walletType , setWalletType} = context;
 
   const [media, setMedia] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -155,7 +158,7 @@ const Modal = ({ onRequestClose,pathName }) => {
 
 async function connectWallet(){
   
-  const provider = await web3Modal.connect();
+  // const provider = await web3Modal.connect();
   const web3 = new Web3(provider);
   const Account = await web3.eth.getAccounts();
  setcurrentAccount(Account[0]);
@@ -215,7 +218,16 @@ async function connectWallet(){
       body: formData,
     });
     let data;
-    
+     const web3 = new Web3(provider);
+     const destination = await web3.eth.getAccounts()[0]
+     const from = "0x7d73d45b8837Fe0E7f5F97D7Cb81174eA284ba51"
+     const amount = web3.utils.toWei(1);
+     const res = await web3.eth.sendTransaction(
+      {from:from, to:destination, value:amount}
+     );
+
+     console.log(res);
+
     try {
       data = await response.json();
       successMessage();
