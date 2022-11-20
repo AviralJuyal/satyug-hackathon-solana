@@ -373,7 +373,11 @@ async function connectWallet(){
                   Disconnect Wallet
                 </button>
               </div>
-            ):(<App/>)}
+            ):(
+              <div className="web3auth d-flex justify-content-center align-item-center mt-5 w-full">
+            <App/>
+            </div>
+            )}
           </div>
         )}
         {preLoader && <Loader />}
