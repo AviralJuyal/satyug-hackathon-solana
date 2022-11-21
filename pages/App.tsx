@@ -9,6 +9,7 @@ import "web3";
 import WalletContext from "../context/WalletContext";
 import Web3 from "web3";
 import { createTypePredicateNodeWithModifier } from "typescript";
+import { Console } from "console";
 
 // HIGHLIGHTSTART-registerApp
 const clientId = "8118dbfab8021e3cfda426521120b69dacbdda8b37f24781c5bda"; // get from https://dashboard.web3auth.io
@@ -74,36 +75,38 @@ function App(){
 
     // const user_onfo = await web3auth.getUserInfo()
     // console.log(user_onfo);
-    
-    const web3 = new Web3(web3authProvider as any);
-     const adds = (await web3.eth.getAccounts())[0];
-     console.log(adds);
-     const bal = await web3.eth.getBalance(adds);
-     console.log(bal);
-     const provider = new ethers.providers.Web3Provider(web3authProvider);
-     
-     const signer = provider.getSigner();
-     const destination = "0x34958ccf3e9d22Ff0511fD7E70b4C328328AB1a4";
-     const tow = "0x65057bCFb2008e4BD87596c2e1041B9926e94559";
-     const amount = ethers.utils.parseEther("1.0");
+    const privateKey = await web3authProvider.request({
+      method: "eth_private_key"
+    });
+    console.log
+    (privateKey);
 
-     const gas  = provider.getGasPrice();
-     const wallet = ethers.Wallet.fromMnemonic("ecology decide share woman tenant example empty nature tank tortoise slender short")
-     const gl = wallet.connect(provider);
-     
+    //! goril provider stted up to use in goril nettwoerk as web3auth provider not working in goril
 
-     const tx = {
-      from: wallet.address,
-      to: tow,
-      value:amount,
-      gasPrice: gas,
-      gasLimit: ethers.utils.hexlify(10000),
-      nounce: await provider.getTransactionCount(wallet.address, 'latest')
-     };
+     const provider = new ethers.providers.JsonRpcProvider('https://goerli.infura.io/v3/0f915b2ce86c461ab0ee341166802b14');  
+     const privateKey1 = 'c3708a1a39ced4e2ff63463ed13aec2364cc9f801632bb2f54a463184df62b5a' 
+     const wallet = new ethers.Wallet(privateKey1,provider)
+     const senderBalanceBefore = await wallet.getBalance()
+     const recieverBalanceBefore =  await provider.getBalance(address)
+   
+       console.log(`\nSender balance before: ${ethers.utils.formatEther(senderBalanceBefore)}`)
+       console.log(`reciever balance before: ${ethers.utils.formatEther(recieverBalanceBefore)}\n`)
 
-     const transection =  await signer.sendTransaction(tx);
+       const tx =  await wallet.sendTransaction({
+        to:address,
+ 
+        value: ethers.utils.parseEther('0.0001')
+    })
 
-     console.log(transection);
+    await tx.wait()
+    console.log(tx)
+
+    const senderBalanceAfter = await wallet.getBalance()
+    const recieverBalanceAfter = await provider.getBalance(address)
+
+    console.log(`\nSender balance after: ${ethers.utils.formatEther(senderBalanceAfter)}`)
+    console.log(`reciever balance after: ${ethers.utils.formatEther(recieverBalanceAfter)}\n`)
+
 
     //  const originalMessage = "YOUR_MESSAGE";
 
