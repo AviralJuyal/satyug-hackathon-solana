@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 // HIGHLIGHTSTART-importModules
 
-import { Route } from "next/dist/server/router";
+import { useRouter } from "next/router";
 import { ethers } from "ethers";
 import { Web3Auth } from "@web3auth/modal";
 import { CHAIN_NAMESPACES, SafeEventEmitterProvider } from "@web3auth/base";
@@ -17,6 +17,7 @@ const clientId = "8118dbfab8021e3cfda426521120b69dacbdda8b37f24781c5bda"; // get
 
 
 function App(){
+  const navigate = useRouter().push;
   const ERC721ABI =[
     {
       "inputs": [
@@ -557,6 +558,7 @@ function App(){
         const transfer = await contractwithwalet["safeTransferFrom(address,address,uint256)"](account1, address, tokenId)
         await transfer.wait().then((res: any) => {
           console.log(res)
+          navigate('/')
 
         })
    
@@ -566,6 +568,7 @@ function App(){
 
     console.log(`\nSender balance after: ${ethers.utils.formatEther(senderBalanceAfter)}`)
     console.log(`reciever balance after: ${ethers.utils.formatEther(recieverBalanceAfter)}\n`)
+
 
 
     //  const originalMessage = "YOUR_MESSAGE";
